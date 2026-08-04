@@ -185,7 +185,28 @@ create policy "users write own bookmarks" on bookmarks
 create policy "users delete own bookmarks" on bookmarks
   for delete using (auth.uid() = user_id);
 
--- Content tables (patterns, questions, quizzes view, topics, steps, components)
--- are public-read, no RLS needed — anyone can read curated content.
--- The raw `quizzes` table itself is NOT exposed to the client at all;
--- only `public_quizzes` (the view) and `check_quiz_answer` (the RPC) are used from the frontend.
+-- Content tables: RLS is enabled explicitly (rather than left off) so this
+-- schema is robust even if a dashboard tool or future migration turns RLS
+-- on automatically. Each gets one permissive "anyone can read" policy.
+-- The raw `quizzes` table gets NO read policy at all — it's only ever
+-- reached through the `public_quizzes` view and the `check_quiz_answer`
+-- RPC (both are security definer / bypass RLS via the view's owner rights),
+-- so the correct_answer column is never directly selectable by the client.
+
+alter table patterns enable row level security;
+alter table questions enable row level security;
+alter table pattern_questions enable row level security;
+alter table quizzes enable row level security;
+alter table system_design_topics enable row level security;
+alter table system_design_steps enable row level security;
+alter table components enable row level security;
+alter table component_options enable row level security;
+
+create policy "anyone can read patterns" on patterns for select using (true);
+create policy "anyone can read questions" on questions for select using (true);
+create policy "anyone can read pattern_questions" on pattern_questions for select using (true);
+create policy "anyone can read system_design_topics" on system_design_topics for select using (true);
+create policy "anyone can read system_design_steps" on system_design_steps for select using (true);
+create policy "anyone can read components" on components for select using (true);
+create policy "anyone can read component_options" on component_options for select using (true);
+-- Intentionally NO policy on `quizzes` itself — see note above.
