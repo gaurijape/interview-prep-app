@@ -1,5 +1,10 @@
 import { createClient } from "@/lib/supabaseClient";
 
+// Content changes frequently in Supabase (new patterns/topics get
+// seeded via SQL after deploy), so force fresh data on every
+// request instead of Next.js statically caching this page at build time.
+export const dynamic = "force-dynamic";
+
 export default async function PatternDetailPage({
   params,
 }: {

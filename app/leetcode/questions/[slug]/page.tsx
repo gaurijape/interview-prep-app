@@ -2,6 +2,11 @@ import { createClient } from "@/lib/supabaseClient";
 import QuizCard from "@/components/QuizCard";
 import SolutionReveal from "@/components/SolutionReveal";
 
+// Content changes frequently in Supabase (new patterns/topics get
+// seeded via SQL after deploy), so force fresh data on every
+// request instead of Next.js statically caching this page at build time.
+export const dynamic = "force-dynamic";
+
 export default async function QuestionDetailPage({
   params,
 }: {
