@@ -18,7 +18,7 @@ export default async function PatternDetailPage({
 
   const { data: questions } = await supabase
     .from("questions")
-    .select("id, slug, title, difficulty, leetcode_url")
+    .select("id, slug, title, difficulty")
     .eq("primary_pattern_id", pattern.id);
 
   return (
@@ -39,9 +39,7 @@ export default async function PatternDetailPage({
         {questions?.map((q) => (
           <a
             key={q.id}
-            href={q.leetcode_url ?? "#"}
-            target="_blank"
-            rel="noreferrer"
+            href={`/leetcode/questions/${q.slug}`}
             className="block rounded-lg border bg-white p-4 hover:shadow transition"
           >
             <div className="flex justify-between items-baseline">
