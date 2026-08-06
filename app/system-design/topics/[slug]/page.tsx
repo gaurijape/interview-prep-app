@@ -16,7 +16,7 @@ export default async function TopicDetailPage({
 
   const { data: topic } = await supabase
     .from("system_design_topics")
-    .select("id, name, difficulty, description")
+    .select("id, name, difficulty, description, tradeoffs, followup_questions")
     .eq("slug", slug)
     .single();
 
@@ -90,6 +90,32 @@ export default async function TopicDetailPage({
           );
         })}
       </div>
+
+      {topic.tradeoffs && (
+        <div className="rounded-lg border bg-amber-50 border-amber-200 p-4">
+          <h2 className="font-semibold text-amber-900 text-sm uppercase tracking-wide mb-2">
+            Key Trade-offs
+          </h2>
+          <p className="text-sm text-amber-950">{topic.tradeoffs}</p>
+        </div>
+      )}
+
+      {topic.followup_questions && topic.followup_questions.length > 0 && (
+        <div className="space-y-2">
+          <h2 className="font-semibold text-sm uppercase tracking-wide text-slate-500">
+            Interviewer Follow-ups
+          </h2>
+          {topic.followup_questions.map((q: string, i: number) => (
+            <div
+              key={i}
+              className="rounded-lg border bg-white p-3 text-sm text-slate-700"
+            >
+              <span className="font-semibold text-red-500 mr-2">Q{i + 1}.</span>
+              {q}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
