@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabaseClient";
+import DifficultyBadge from "@/components/DifficultyBadge";
 import ArchitectureDiagram from "@/components/ArchitectureDiagram";
 
 // Content changes frequently in Supabase (new patterns/topics get
@@ -50,12 +51,12 @@ export default async function TopicDetailPage({
       <div>
         <div className="flex justify-between items-baseline">
           <h1 className="text-2xl font-bold">{topic.name}</h1>
-          <span className="text-xs text-slate-500 capitalize">{topic.difficulty}</span>
+          <DifficultyBadge level={topic.difficulty} />
         </div>
-        <p className="text-slate-700 mt-2">{topic.description}</p>
+        <p className="text-fg mt-2">{topic.description}</p>
       </div>
 
-      <div className="rounded-lg border bg-white px-4">
+      <div className="rounded-lg border border-border bg-surface px-4">
         <ArchitectureDiagram components={orderedComponents} />
       </div>
 
@@ -65,21 +66,21 @@ export default async function TopicDetailPage({
             .map((id: string) => components?.find((c) => c.id === id))
             .filter(Boolean);
           return (
-            <div key={s.id} className="rounded-lg border bg-white p-4">
+            <div key={s.id} className="rounded-lg border border-border bg-surface p-4">
               <div className="flex items-baseline gap-2">
-                <span className="text-xs font-semibold text-slate-400">
+                <span className="text-xs font-semibold text-fgmuted">
                   STEP {s.step_order}
                 </span>
                 <h2 className="font-semibold">{s.title}</h2>
               </div>
-              <p className="text-sm text-slate-700 mt-2">{s.content}</p>
+              <p className="text-sm text-fg mt-2">{s.content}</p>
               {stepComponents.length > 0 && (
                 <div className="flex gap-2 mt-3 flex-wrap">
                   {stepComponents.map((c: any) => (
                     <a
                       key={c.id}
                       href={`/system-design/components/${c.slug}`}
-                      className="text-xs rounded-full border px-2 py-1 text-slate-600 hover:bg-slate-50"
+                      className="text-xs rounded-full border px-2 py-1 text-fgmuted hover:bg-bg"
                     >
                       {c.name}
                     </a>
@@ -92,23 +93,23 @@ export default async function TopicDetailPage({
       </div>
 
       {topic.tradeoffs && (
-        <div className="rounded-lg border bg-amber-50 border-amber-200 p-4">
-          <h2 className="font-semibold text-amber-900 text-sm uppercase tracking-wide mb-2">
+        <div className="rounded-lg border border-border bg-accent2/10 border-accent2/30 p-4">
+          <h2 className="font-semibold text-accent2 text-sm uppercase tracking-wide mb-2">
             Key Trade-offs
           </h2>
-          <p className="text-sm text-amber-950">{topic.tradeoffs}</p>
+          <p className="text-sm text-fg">{topic.tradeoffs}</p>
         </div>
       )}
 
       {topic.followup_questions && topic.followup_questions.length > 0 && (
         <div className="space-y-2">
-          <h2 className="font-semibold text-sm uppercase tracking-wide text-slate-500">
+          <h2 className="font-semibold text-sm uppercase tracking-wide text-fgmuted">
             Interviewer Follow-ups
           </h2>
           {topic.followup_questions.map((q: string, i: number) => (
             <div
               key={i}
-              className="rounded-lg border bg-white p-3 text-sm text-slate-700"
+              className="rounded-lg border border-border bg-surface p-3 text-sm text-fg"
             >
               <span className="font-semibold text-red-500 mr-2">Q{i + 1}.</span>
               {q}

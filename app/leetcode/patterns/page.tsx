@@ -17,7 +17,7 @@ export default async function PatternGlossaryPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">Pattern Glossary</h1>
-      <p className="text-slate-600 text-sm">
+      <p className="text-fgmuted text-sm">
         Every pattern, browsable on its own — not just inside a question.
       </p>
       <div className="grid gap-3">
@@ -25,17 +25,17 @@ export default async function PatternGlossaryPage() {
           <a
             key={p.id}
             href={`/leetcode/patterns/${p.slug}`}
-            className="rounded-lg border bg-white p-4 hover:shadow transition"
+            className="rounded-lg border border-border bg-surface p-4 hover:border-accent transition-colors"
           >
             <div className="flex justify-between items-baseline">
               <h3 className="font-semibold">{p.name}</h3>
-              <span className="text-xs text-slate-500">{p.category}</span>
+              <span className="text-xs text-fgmuted">{p.category}</span>
             </div>
-            <p className="text-sm text-slate-600 mt-1">{p.description}</p>
+            <p className="text-sm text-fgmuted mt-1">{p.description}</p>
           </a>
         ))}
         {!patterns?.length && (
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-fgmuted">
             No patterns yet — seed the `patterns` table to see them here.
           </p>
         )}

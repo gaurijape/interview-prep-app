@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabaseClient";
+import DifficultyBadge from "@/components/DifficultyBadge";
 
 // Content changes frequently in Supabase (new patterns/topics get
 // seeded via SQL after deploy), so force fresh data on every
@@ -30,13 +31,13 @@ export default async function PatternDetailPage({
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">{pattern.name}</h1>
-        <p className="text-xs text-slate-500 mt-1">{pattern.category}</p>
-        <p className="text-slate-700 mt-3">{pattern.description}</p>
+        <p className="text-xs text-fgmuted mt-1">{pattern.category}</p>
+        <p className="text-fg mt-3">{pattern.description}</p>
       </div>
 
-      <div className="rounded-lg border bg-white p-4">
+      <div className="rounded-lg border border-border bg-surface p-4">
         <h2 className="font-semibold mb-1">How to recognize it</h2>
-        <p className="text-sm text-slate-700">{pattern.recognition_cues}</p>
+        <p className="text-sm text-fg">{pattern.recognition_cues}</p>
       </div>
 
       <div className="space-y-3">
@@ -45,16 +46,16 @@ export default async function PatternDetailPage({
           <a
             key={q.id}
             href={`/leetcode/questions/${q.slug}`}
-            className="block rounded-lg border bg-white p-4 hover:shadow transition"
+            className="block rounded-lg border border-border bg-surface p-4 hover:border-accent transition-colors"
           >
             <div className="flex justify-between items-baseline">
               <h3 className="font-medium">{q.title}</h3>
-              <span className="text-xs text-slate-500 capitalize">{q.difficulty}</span>
+              <DifficultyBadge level={q.difficulty} />
             </div>
           </a>
         ))}
         {!questions?.length && (
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-fgmuted">
             No questions linked to this pattern yet.
           </p>
         )}

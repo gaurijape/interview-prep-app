@@ -15,7 +15,7 @@ export default async function ComponentGlossaryPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">Component Glossary</h1>
-      <p className="text-slate-600 text-sm">
+      <p className="text-fgmuted text-sm">
         Load balancers, caches, queues, databases — what each one does, and
         which options to reach for.
       </p>
@@ -24,17 +24,17 @@ export default async function ComponentGlossaryPage() {
           <a
             key={c.id}
             href={`/system-design/components/${c.slug}`}
-            className="rounded-lg border bg-white p-4 hover:shadow transition"
+            className="rounded-lg border border-border bg-surface p-4 hover:border-accent transition-colors"
           >
             <div className="flex justify-between items-baseline">
               <h3 className="font-semibold">{c.name}</h3>
-              <span className="text-xs text-slate-500">{c.category}</span>
+              <span className="text-xs text-fgmuted">{c.category}</span>
             </div>
-            <p className="text-sm text-slate-600 mt-1">{c.description}</p>
+            <p className="text-sm text-fgmuted mt-1">{c.description}</p>
           </a>
         ))}
         {!components?.length && (
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-fgmuted">
             No components yet — seed the `components` table to see them here.
           </p>
         )}

@@ -30,13 +30,13 @@ export default async function ComponentDetailPage({
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">{component.name}</h1>
-        <p className="text-slate-600 mt-1">{component.description}</p>
+        <p className="text-fgmuted mt-1">{component.description}</p>
       </div>
 
       <div className="space-y-4">
         <h2 className="text-lg font-semibold">Options</h2>
         {options?.map((o) => (
-          <div key={o.id} className="rounded-lg border bg-white p-4">
+          <div key={o.id} className="rounded-lg border border-border bg-surface p-4">
             <h3 className="font-semibold">{o.name}</h3>
             <p className="text-sm mt-2">
               <span className="font-medium">When to use: </span>
@@ -46,11 +46,11 @@ export default async function ComponentDetailPage({
               <span className="font-medium">Trade-offs: </span>
               {o.tradeoffs}
             </p>
-            {o.notes && <p className="text-sm mt-1 text-slate-500">{o.notes}</p>}
+            {o.notes && <p className="text-sm mt-1 text-fgmuted">{o.notes}</p>}
           </div>
         ))}
         {!options?.length && (
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-fgmuted">
             No options seeded yet for this component.
           </p>
         )}

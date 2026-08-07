@@ -5,19 +5,19 @@ export default function Home() {
       <div className="grid grid-cols-2 gap-4">
         <a
           href="/leetcode"
-          className="rounded-lg border bg-white p-6 hover:shadow transition"
+          className="rounded-lg border border-border bg-surface p-6 hover:border-accent transition-colors"
         >
           <h2 className="text-lg font-semibold">LeetCode</h2>
-          <p className="text-sm text-slate-600 mt-1">
+          <p className="text-sm text-fgmuted mt-1">
             Pattern glossary, recognition quizzes, complexity checks.
           </p>
         </a>
         <a
           href="/system-design"
-          className="rounded-lg border bg-white p-6 hover:shadow transition"
+          className="rounded-lg border border-border bg-surface p-6 hover:border-accent transition-colors"
         >
           <h2 className="text-lg font-semibold">System Design</h2>
-          <p className="text-sm text-slate-600 mt-1">
+          <p className="text-sm text-fgmuted mt-1">
             Component glossary, trade-offs, full walkthroughs.
           </p>
         </a>

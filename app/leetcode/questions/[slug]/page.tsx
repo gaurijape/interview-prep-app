@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabaseClient";
+import DifficultyBadge from "@/components/DifficultyBadge";
 import QuestionFlow from "@/components/QuestionFlow";
 
 // Content changes frequently in Supabase (new patterns/topics get
@@ -53,22 +54,22 @@ export default async function QuestionDetailPage({
       <div>
         <div className="flex justify-between items-baseline">
           <h1 className="text-2xl font-bold">{question.title}</h1>
-          <span className="text-xs text-slate-500 capitalize">{question.difficulty}</span>
+          <DifficultyBadge level={question.difficulty} />
         </div>
-        <p className="text-slate-700 mt-2">{question.description}</p>
+        <p className="text-fg mt-2">{question.description}</p>
         <div className="flex gap-4 mt-2 text-sm">
           <a
             href={question.leetcode_url ?? "#"}
             target="_blank"
             rel="noreferrer"
-            className="text-blue-600 underline"
+            className="text-accent underline"
           >
             View on LeetCode
           </a>
           {pattern && (
             <a
               href={`/leetcode/patterns/${pattern.slug}`}
-              className="text-slate-500 underline"
+              className="text-fgmuted underline"
             >
               Learn the {pattern.name} pattern →
             </a>
@@ -93,7 +94,7 @@ export default async function QuestionDetailPage({
         {prevQuestion ? (
           <a
             href={`/leetcode/questions/${prevQuestion.slug}`}
-            className="text-slate-600 hover:text-slate-900"
+            className="text-fgmuted hover:text-fg"
           >
             ← {prevQuestion.title}
           </a>
@@ -103,14 +104,14 @@ export default async function QuestionDetailPage({
         {nextQuestion ? (
           <a
             href={`/leetcode/questions/${nextQuestion.slug}`}
-            className="rounded bg-slate-900 text-white px-4 py-2 hover:bg-slate-700"
+            className="rounded bg-accent text-bg font-semibold px-4 py-2 rounded hover:bg-accent/80 transition-colors"
           >
             Next: {nextQuestion.title} →
           </a>
         ) : (
           <a
             href="/leetcode/questions"
-            className="rounded bg-slate-900 text-white px-4 py-2 hover:bg-slate-700"
+            className="rounded bg-accent text-bg font-semibold px-4 py-2 rounded hover:bg-accent/80 transition-colors"
           >
             Back to all questions
           </a>
