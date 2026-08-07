@@ -18,12 +18,20 @@ export default async function QuestionDetailPage({
   const { data: question } = await supabase
     .from("questions")
     .select(
-      "id, title, leetcode_url, difficulty, description, java_solution, complexity_time, complexity_space, hints, primary_pattern_id, patterns(name, slug)"
+      "id, title, leetcode_url, difficulty, description, java_solution, complexity_time, complexity_space, hints, primary_pattern_id"
     )
     .eq("slug", slug)
     .single();
 
   if (!question) return <p>Question not found.</p>;
+
+  const { data: pattern } = question.primary_pattern_id
+    ? await supabase
+        .from("patterns")
+        .select("name, slug")
+        .eq("id", question.primary_pattern_id)
+        .single()
+    : { data: null };
 
   // public_quizzes excludes correct_answer — see docs/ARCHITECTURE.md §6.1.
   // Grading happens server-side via the check_quiz_answer RPC, called from QuizCard.
@@ -46,8 +54,6 @@ export default async function QuestionDetailPage({
     currentIndex >= 0 && currentIndex < (allTitles?.length ?? 0) - 1
       ? allTitles?.[currentIndex + 1]
       : null;
-
-  const pattern = (question as any).patterns;
 
   return (
     <div className="space-y-6">

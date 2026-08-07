@@ -9,8 +9,11 @@ export default async function AllQuestionsPage() {
   const supabase = createClient();
   const { data: questions } = await supabase
     .from("questions")
-    .select("id, slug, title, difficulty, primary_pattern_id, patterns(name)")
+    .select("id, slug, title, difficulty, primary_pattern_id")
     .order("title");
+
+  const { data: patterns } = await supabase.from("patterns").select("id, name");
+  const patternNameById = new Map((patterns ?? []).map((p) => [p.id, p.name]));
 
   return (
     <div className="space-y-4">
@@ -19,7 +22,7 @@ export default async function AllQuestionsPage() {
         Jump straight to any question — no need to go through a pattern first.
       </p>
       <div className="grid gap-2">
-        {questions?.map((q: any) => (
+        {questions?.map((q) => (
           <a
             key={q.id}
             href={`/leetcode/questions/${q.slug}`}
@@ -27,9 +30,9 @@ export default async function AllQuestionsPage() {
           >
             <div>
               <span className="font-medium">{q.title}</span>
-              {q.patterns?.name && (
+              {patternNameById.get(q.primary_pattern_id) && (
                 <span className="text-xs text-fgmuted ml-2">
-                  {q.patterns.name}
+                  {patternNameById.get(q.primary_pattern_id)}
                 </span>
               )}
             </div>
