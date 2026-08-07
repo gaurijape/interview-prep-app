@@ -17,10 +17,17 @@ type Quiz = {
  * RPC. The correct answer is never sent to the browser until after the
  * user has already submitted a guess.
  */
-export default function QuizCard({ quiz }: { quiz: Quiz }) {
+export default function QuizCard({
+  quiz,
+  onAnswered,
+}: {
+  quiz: Quiz;
+  onAnswered?: () => void;
+}) {
   const [selected, setSelected] = useState<string | null>(null);
   const [result, setResult] = useState<{ correct: boolean; explanation: string | null } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [hasFiredCallback, setHasFiredCallback] = useState(false);
 
   async function handleSubmit() {
     if (!selected) return;
@@ -29,6 +36,12 @@ export default function QuizCard({ quiz }: { quiz: Quiz }) {
     setResult(res);
     await updateProgress("question", quiz.question_id, res.correct);
     setLoading(false);
+    // Fire once per quiz — an "attempt" unlocks the solution regardless of
+    // how many times the user re-submits after that first try.
+    if (!hasFiredCallback) {
+      setHasFiredCallback(true);
+      onAnswered?.();
+    }
   }
 
   return (
