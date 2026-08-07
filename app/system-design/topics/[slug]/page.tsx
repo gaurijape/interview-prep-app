@@ -29,8 +29,8 @@ export default async function TopicDetailPage({
     .eq("topic_id", topic.id)
     .order("step_order");
 
-  // Collect every component referenced across all steps, in first-seen
-  // order, to drive the flow diagram at the top of the page.
+  // Every referenced component (for linking chips + category coloring),
+  // regardless of whether it appears in the diagram.
   const allComponentIds = Array.from(
     new Set((steps ?? []).flatMap((s) => s.component_ids ?? []))
   );
@@ -42,9 +42,20 @@ export default async function TopicDetailPage({
         .in("id", allComponentIds)
     : { data: [] };
 
-  const orderedComponents = allComponentIds
-    .map((id) => components?.find((c) => c.id === id))
-    .filter((c): c is NonNullable<typeof c> => !!c);
+  // Diagram nodes = one per STEP (not just steps that matched a generic
+  // component), so the diagram always shows the full architecture that's
+  // actually described below it — labeled with the step's own title, and
+  // colored by its linked component's category when one exists.
+  const diagramNodes = (steps ?? []).map((s) => {
+    const linkedComponent = (s.component_ids ?? [])
+      .map((id: string) => components?.find((c) => c.id === id))
+      .find(Boolean);
+    return {
+      id: s.id,
+      name: s.title,
+      category: linkedComponent?.category ?? null,
+    };
+  });
 
   return (
     <div className="space-y-6">
@@ -57,7 +68,7 @@ export default async function TopicDetailPage({
       </div>
 
       <div className="rounded-lg border border-border bg-surface px-4">
-        <ArchitectureDiagram components={orderedComponents} />
+        <ArchitectureDiagram components={diagramNodes} />
       </div>
 
       <div className="space-y-4">
