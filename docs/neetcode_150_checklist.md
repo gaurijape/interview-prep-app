@@ -1,6 +1,6 @@
 # NeetCode 150 — Master Checklist
 
-Status: ✅ done | ⬜ not yet. 20/150 done after batch 1.
+Status: ✅ done | ⬜ not yet. 40/150 done after batch 2.
 
 ## Arrays & Hashing (9/9) ✅ COMPLETE
 ✅ Two Sum · ✅ Contains Duplicate · ✅ Valid Anagram · ✅ Group Anagrams ·
@@ -16,18 +16,21 @@ Status: ✅ done | ⬜ not yet. 20/150 done after batch 1.
 ✅ Longest Repeating Character Replacement · ✅ Permutation in String ·
 ✅ Minimum Window Substring · ✅ Sliding Window Maximum
 
-## Stack (0/7) ⬜
-Valid Parentheses, Min Stack, Evaluate Reverse Polish Notation, Generate Parentheses,
-Daily Temperatures, Car Fleet, Largest Rectangle in Histogram
+## Stack (7/7) ✅ COMPLETE
+✅ Valid Parentheses · ✅ Min Stack · ✅ Evaluate Reverse Polish Notation ·
+✅ Generate Parentheses · ✅ Daily Temperatures · ✅ Car Fleet ·
+✅ Largest Rectangle in Histogram
 
-## Binary Search (0/7) ⬜
-Binary Search, Search a 2D Matrix, Koko Eating Bananas, Find Minimum in Rotated Sorted Array,
-Search in Rotated Sorted Array, Time Based Key-Value Store, Median of Two Sorted Arrays
+## Binary Search (7/7) ✅ COMPLETE
+✅ Binary Search · ✅ Search a 2D Matrix · ✅ Koko Eating Bananas ·
+✅ Find Minimum in Rotated Sorted Array · ✅ Search in Rotated Sorted Array ·
+✅ Time Based Key-Value Store · ✅ Median of Two Sorted Arrays
 
-## Linked List (0/11) ⬜
-Reverse Linked List, Merge Two Sorted Lists, Reorder List, Remove Nth Node From End,
-Copy List with Random Pointer, Add Two Numbers, Linked List Cycle (have it, different pattern tag),
-Find the Duplicate Number, LRU Cache, Merge K Sorted Lists, Reverse Nodes in K-Group
+## Linked List (6/11)
+✅ Reverse Linked List · ✅ Merge Two Sorted Lists · ✅ Reorder List ·
+✅ Remove Nth Node From End · ✅ Copy List with Random Pointer · ✅ Add Two Numbers
+⬜ Linked List Cycle (have as separate fast-slow-pointers pattern entry already),
+⬜ Find the Duplicate Number, LRU Cache, Merge K Sorted Lists, Reverse Nodes in K-Group
 
 ## Trees (0/15) ⬜
 Invert Binary Tree, Maximum Depth, Diameter, Balanced Binary Tree, Same Tree,
