@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import QuizCard from "@/components/QuizCard";
+import { recordRecentQuestion, recordQuestionAnswered } from "@/lib/localProgress";
 
 type Quiz = {
   id: string;
@@ -18,12 +19,16 @@ type Stage = { kind: "quiz"; index: number } | { kind: "hints" } | { kind: "solu
  * each stage only reachable after the previous one is done.
  */
 export default function QuestionFlow({
+  questionSlug,
+  questionTitle,
   quizzes,
   hints,
   javaSolution,
   complexityTime,
   complexitySpace,
 }: {
+  questionSlug: string;
+  questionTitle: string;
   quizzes: Quiz[];
   hints: string[] | null;
   javaSolution: string;
@@ -35,6 +40,11 @@ export default function QuestionFlow({
   );
   const [answeredCurrent, setAnsweredCurrent] = useState(false);
   const [revealedHints, setRevealedHints] = useState(0);
+
+  // Record this as a recently-viewed question once, on mount.
+  useEffect(() => {
+    recordRecentQuestion(questionSlug, questionTitle);
+  }, [questionSlug, questionTitle]);
 
   const totalSteps = quizzes.length + 2; // quizzes + hints stage + solution stage
   const currentStepNumber =
@@ -68,7 +78,10 @@ export default function QuestionFlow({
         <div className="space-y-3">
           <QuizCard
             quiz={quizzes[stage.index]}
-            onAnswered={() => setAnsweredCurrent(true)}
+            onAnswered={() => {
+              setAnsweredCurrent(true);
+              recordQuestionAnswered(questionSlug);
+            }}
           />
           {answeredCurrent && (
             <button

@@ -30,8 +30,18 @@ export default async function PatternDetailPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">{pattern.name}</h1>
-        <p className="text-xs text-fgmuted mt-1">{pattern.category}</p>
+        <div className="flex justify-between items-start gap-4">
+          <div>
+            <h1 className="text-2xl font-bold">{pattern.name}</h1>
+            <p className="text-xs text-fgmuted mt-1">{pattern.category}</p>
+          </div>
+          <a
+            href={`/leetcode/patterns/${slug}/learn`}
+            className="shrink-0 bg-accent text-bg font-semibold text-sm px-3 py-1.5 rounded hover:bg-accent/80 transition-colors whitespace-nowrap"
+          >
+            Interactive Lesson →
+          </a>
+        </div>
         <p className="text-fg mt-3">{pattern.description}</p>
       </div>
 

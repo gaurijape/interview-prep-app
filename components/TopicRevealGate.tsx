@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { recordTopicRevealed } from "@/lib/localProgress";
 
 const GUIDING_QUESTIONS = [
   "What APIs would you expose?",
@@ -15,10 +16,23 @@ const GUIDING_QUESTIONS = [
  * commit to thinking before revealing the reference design underneath —
  * closer to how a real interview actually goes.
  */
-export default function TopicRevealGate({ children }: { children: ReactNode }) {
+export default function TopicRevealGate({
+  children,
+  topicSlug,
+  topicTitle,
+}: {
+  children: ReactNode;
+  topicSlug: string;
+  topicTitle: string;
+}) {
   const [revealed, setRevealed] = useState(false);
 
   if (revealed) return <>{children}</>;
+
+  function reveal() {
+    setRevealed(true);
+    recordTopicRevealed(topicSlug);
+  }
 
   return (
     <div className="rounded-lg border border-border bg-surface p-5 space-y-4">
@@ -37,7 +51,7 @@ export default function TopicRevealGate({ children }: { children: ReactNode }) {
         Sketch an answer in your head (or on paper) — then reveal the reference architecture and compare.
       </p>
       <button
-        onClick={() => setRevealed(true)}
+        onClick={reveal}
         className="bg-accent text-bg font-semibold text-sm px-4 py-2 rounded hover:bg-accent/80 transition-colors"
       >
         I've thought it through — show me the architecture →

@@ -84,6 +84,8 @@ export default async function QuestionDetailPage({
       </div>
 
       <QuestionFlow
+        questionSlug={slug}
+        questionTitle={question.title}
         quizzes={(quizzes ?? []).map((q) => ({
           id: q.id,
           question_id: q.question_id,
