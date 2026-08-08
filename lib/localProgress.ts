@@ -44,7 +44,7 @@ function writeAll(data: LocalProgress) {
 export function recordRecentQuestion(slug: string, title: string) {
   const data = readAll();
   data.recent = [
-    { type: "question", slug, title, ts: Date.now() },
+    { type: "question" as const, slug, title, ts: Date.now() },
     ...data.recent.filter((r) => !(r.type === "question" && r.slug === slug)),
   ].slice(0, MAX_RECENT);
   writeAll(data);
@@ -53,7 +53,7 @@ export function recordRecentQuestion(slug: string, title: string) {
 export function recordRecentTopic(slug: string, title: string) {
   const data = readAll();
   data.recent = [
-    { type: "topic", slug, title, ts: Date.now() },
+    { type: "topic" as const, slug, title, ts: Date.now() },
     ...data.recent.filter((r) => !(r.type === "topic" && r.slug === slug)),
   ].slice(0, MAX_RECENT);
   writeAll(data);
