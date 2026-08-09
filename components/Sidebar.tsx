@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { signOut } from "@/app/actions/auth";
 
 type NavItem = { label: string; href: string };
 type NavSection = { label: string; items: NavItem[] };
@@ -22,14 +23,14 @@ const SECTIONS: NavSection[] = [
   },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ userEmail }: { userEmail: string | null }) {
   const [open, setOpen] = useState<Record<string, boolean>>({
     "leetcode/": true,
     "system_design/": true,
   });
 
   return (
-    <aside className="w-64 shrink-0 border-r border-border bg-surface min-h-screen font-mono text-sm">
+    <aside className="w-64 shrink-0 border-r border-border bg-surface min-h-screen font-mono text-sm flex flex-col">
       <div className="px-4 py-5 border-b border-border">
         <a href="/" className="text-accent font-semibold tracking-tight">
           ~/prep <span className="text-fgmuted">$</span>
@@ -37,7 +38,7 @@ export default function Sidebar() {
         </a>
       </div>
 
-      <nav className="px-2 py-3">
+      <nav className="px-2 py-3 flex-1">
         {SECTIONS.map((section) => (
           <div key={section.label} className="mb-1">
             <button
@@ -67,6 +68,29 @@ export default function Sidebar() {
           </div>
         ))}
       </nav>
+
+      <div className="px-4 py-3 border-t border-border">
+        {userEmail ? (
+          <div className="space-y-2">
+            <p className="text-xs text-fgmuted truncate">{userEmail}</p>
+            <form action={signOut}>
+              <button
+                type="submit"
+                className="text-xs text-fgmuted hover:text-hard transition-colors"
+              >
+                Sign out
+              </button>
+            </form>
+          </div>
+        ) : (
+          <a
+            href="/login"
+            className="text-xs text-accent hover:text-accent/80 transition-colors"
+          >
+            Sign in →
+          </a>
+        )}
+      </div>
     </aside>
   );
 }

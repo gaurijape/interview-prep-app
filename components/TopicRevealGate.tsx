@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { recordTopicRevealed } from "@/lib/localProgress";
+import { updateProgress } from "@/app/actions/quiz";
 
 const GUIDING_QUESTIONS = [
   "What APIs would you expose?",
@@ -18,10 +19,12 @@ const GUIDING_QUESTIONS = [
  */
 export default function TopicRevealGate({
   children,
+  topicId,
   topicSlug,
   topicTitle,
 }: {
   children: ReactNode;
+  topicId: string;
   topicSlug: string;
   topicTitle: string;
 }) {
@@ -31,7 +34,12 @@ export default function TopicRevealGate({
 
   function reveal() {
     setRevealed(true);
-    recordTopicRevealed(topicSlug);
+    recordTopicRevealed(topicSlug); // anonymous/local fallback, always recorded
+    // Real per-user persistence — this is a no-op if not logged in (the
+    // action checks auth.getUser() and returns early), so it's safe to
+    // always call. "wasCorrect: true" here just means "engaged with it",
+    // there's no correct/incorrect concept for a reveal.
+    updateProgress("system_design_topic", topicId, true);
   }
 
   return (

@@ -29,15 +29,28 @@ function ProgressBar({ label, done, total }: { label: string; done: number; tota
   );
 }
 
-export default function DashboardClient({ totals }: { totals: Totals }) {
+export default function DashboardClient({
+  totals,
+  isLoggedIn,
+  realAnsweredQuestions,
+  realRevealedTopics,
+}: {
+  totals: Totals;
+  isLoggedIn: boolean;
+  realAnsweredQuestions: number;
+  realRevealedTopics: number;
+}) {
   const [progress, setProgress] = useState<ReturnType<typeof getLocalProgress> | null>(null);
 
   useEffect(() => {
     setProgress(getLocalProgress());
   }, []);
 
-  const answeredCount = progress?.answeredQuestionSlugs.length ?? 0;
-  const revealedTopicCount = progress?.revealedTopicSlugs.length ?? 0;
+  // Prefer real per-user Supabase data once logged in — that's the whole
+  // point of auth existing. Anonymous visitors still get something useful
+  // from the local fallback.
+  const answeredCount = isLoggedIn ? realAnsweredQuestions : progress?.answeredQuestionSlugs.length ?? 0;
+  const revealedTopicCount = isLoggedIn ? realRevealedTopics : progress?.revealedTopicSlugs.length ?? 0;
   const recent = progress?.recent ?? [];
   const continueItem = recent[0];
 

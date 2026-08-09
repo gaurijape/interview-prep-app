@@ -1,10 +1,15 @@
 import { createClient } from "@/lib/supabaseClient";
+import { createServerSupabaseClient } from "@/lib/supabaseServer";
 import DashboardClient from "@/components/DashboardClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const supabase = createClient();
+  const authClient = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await authClient.auth.getUser();
 
   const [patterns, questions, topics, components] = await Promise.all([
     supabase.from("patterns").select("id, slug, name"),
@@ -12,6 +17,26 @@ export default async function Home() {
     supabase.from("system_design_topics").select("id, slug, name"),
     supabase.from("components").select("id", { count: "exact", head: true }),
   ]);
+
+  // Real per-user counts, only meaningful when logged in — this is what
+  // makes progress actually follow the person across devices instead of
+  // being stuck in one browser's localStorage.
+  let realAnsweredQuestions = 0;
+  let realRevealedTopics = 0;
+  if (user) {
+    const [answeredRes, topicsRes] = await Promise.all([
+      authClient
+        .from("user_progress")
+        .select("id", { count: "exact", head: true })
+        .eq("item_type", "question"),
+      authClient
+        .from("user_progress")
+        .select("id", { count: "exact", head: true })
+        .eq("item_type", "system_design_topic"),
+    ]);
+    realAnsweredQuestions = answeredRes.count ?? 0;
+    realRevealedTopics = topicsRes.count ?? 0;
+  }
 
   const patternList = patterns.data ?? [];
   const topicList = topics.data ?? [];
@@ -30,7 +55,14 @@ export default async function Home() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-bold">Welcome back</h1>
+      <div>
+        <h1 className="text-2xl font-bold">~/prep</h1>
+        <p className="text-sm text-fgmuted mt-1">
+          {user
+            ? "Signed in — your progress follows you across devices."
+            : "Progress below is tracked on this device only — sign in to save it across devices."}
+        </p>
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <a
@@ -54,6 +86,9 @@ export default async function Home() {
       </div>
 
       <DashboardClient
+        isLoggedIn={!!user}
+        realAnsweredQuestions={realAnsweredQuestions}
+        realRevealedTopics={realRevealedTopics}
         totals={{
           patternCount: patternList.length,
           questionCount: questions.count ?? 0,
