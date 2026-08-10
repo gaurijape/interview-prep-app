@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabaseClient";
 import DifficultyBadge from "@/components/DifficultyBadge";
 import ArchitectureDiagram from "@/components/ArchitectureDiagram";
 import TopicRevealGate from "@/components/TopicRevealGate";
+import FollowupQA from "@/components/FollowupQA";
 
 // Content changes frequently in Supabase (new patterns/topics get
 // seeded via SQL after deploy), so force fresh data on every
@@ -18,7 +19,7 @@ export default async function TopicDetailPage({
 
   const { data: topic } = await supabase
     .from("system_design_topics")
-    .select("id, name, difficulty, description, tradeoffs, followup_questions")
+    .select("id, name, difficulty, description, tradeoffs, followup_questions, followup_answers")
     .eq("slug", slug)
     .single();
 
@@ -121,20 +122,10 @@ export default async function TopicDetailPage({
           )}
 
           {topic.followup_questions && topic.followup_questions.length > 0 && (
-            <div className="space-y-2">
-              <h2 className="font-semibold text-sm uppercase tracking-wide text-fgmuted">
-                Interviewer Follow-ups
-              </h2>
-              {topic.followup_questions.map((q: string, i: number) => (
-                <div
-                  key={i}
-                  className="rounded-lg border border-border bg-surface p-3 text-sm text-fg"
-                >
-                  <span className="font-semibold text-red-500 mr-2">Q{i + 1}.</span>
-                  {q}
-                </div>
-              ))}
-            </div>
+            <FollowupQA
+              questions={topic.followup_questions}
+              answers={topic.followup_answers}
+            />
           )}
         </div>
       </TopicRevealGate>
