@@ -18,13 +18,18 @@ export default async function Home() {
     supabase.from("components").select("id", { count: "exact", head: true }),
   ]);
 
-  // Real per-user counts, only meaningful when logged in — this is what
-  // makes progress actually follow the person across devices instead of
-  // being stuck in one browser's localStorage.
+  // Real per-user counts AND recent activity, only meaningful when logged
+  // in — this replaces the old localStorage-only "recent" tracking, which
+  // was shared by anyone on the same browser/device regardless of who
+  // was logged in. That's the actual bug behind "a new visitor sees my
+  // progress" — it wasn't leaking across accounts, it was never
+  // account-scoped in the first place.
   let realAnsweredQuestions = 0;
   let realRevealedTopics = 0;
+  let realRecent: { type: "question" | "topic"; slug: string; title: string }[] = [];
+
   if (user) {
-    const [answeredRes, topicsRes] = await Promise.all([
+    const [answeredRes, topicsRes, recentRes] = await Promise.all([
       authClient
         .from("user_progress")
         .select("id", { count: "exact", head: true })
@@ -33,9 +38,39 @@ export default async function Home() {
         .from("user_progress")
         .select("id", { count: "exact", head: true })
         .eq("item_type", "system_design_topic"),
+      authClient
+        .from("user_progress")
+        .select("item_type, item_id, last_seen_at")
+        .order("last_seen_at", { ascending: false })
+        .limit(8),
     ]);
     realAnsweredQuestions = answeredRes.count ?? 0;
     realRevealedTopics = topicsRes.count ?? 0;
+
+    const recentRows = recentRes.data ?? [];
+    const questionIds = recentRows.filter((r) => r.item_type === "question").map((r) => r.item_id);
+    const topicIds = recentRows.filter((r) => r.item_type === "system_design_topic").map((r) => r.item_id);
+
+    const [questionTitles, topicTitles] = await Promise.all([
+      questionIds.length
+        ? supabase.from("questions").select("id, slug, title").in("id", questionIds)
+        : { data: [] },
+      topicIds.length
+        ? supabase.from("system_design_topics").select("id, slug, name").in("id", topicIds)
+        : { data: [] },
+    ]);
+
+    realRecent = recentRows
+      .map((row) => {
+        if (row.item_type === "question") {
+          const q = questionTitles.data?.find((x) => x.id === row.item_id);
+          return q ? { type: "question" as const, slug: q.slug, title: q.title } : null;
+        } else {
+          const t = topicTitles.data?.find((x) => x.id === row.item_id);
+          return t ? { type: "topic" as const, slug: t.slug, title: t.name } : null;
+        }
+      })
+      .filter((x): x is NonNullable<typeof x> => x !== null);
   }
 
   const patternList = patterns.data ?? [];
@@ -89,6 +124,7 @@ export default async function Home() {
         isLoggedIn={!!user}
         realAnsweredQuestions={realAnsweredQuestions}
         realRevealedTopics={realRevealedTopics}
+        realRecent={realRecent}
         totals={{
           patternCount: patternList.length,
           questionCount: questions.count ?? 0,

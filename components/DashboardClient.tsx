@@ -29,16 +29,20 @@ function ProgressBar({ label, done, total }: { label: string; done: number; tota
   );
 }
 
+type RecentEntry = { type: "question" | "topic"; slug: string; title: string };
+
 export default function DashboardClient({
   totals,
   isLoggedIn,
   realAnsweredQuestions,
   realRevealedTopics,
+  realRecent,
 }: {
   totals: Totals;
   isLoggedIn: boolean;
   realAnsweredQuestions: number;
   realRevealedTopics: number;
+  realRecent: RecentEntry[];
 }) {
   const [progress, setProgress] = useState<ReturnType<typeof getLocalProgress> | null>(null);
 
@@ -46,19 +50,21 @@ export default function DashboardClient({
     setProgress(getLocalProgress());
   }, []);
 
-  // Prefer real per-user Supabase data once logged in — that's the whole
-  // point of auth existing. Anonymous visitors still get something useful
-  // from the local fallback.
+  // Prefer real per-account Supabase data once logged in. The local
+  // fallback is device-only (shared by anyone using this same browser),
+  // which is exactly the confusing behavior that prompted this fix —
+  // it's now clearly labeled as such below rather than presented as if
+  // it were personal account data.
   const answeredCount = isLoggedIn ? realAnsweredQuestions : progress?.answeredQuestionSlugs.length ?? 0;
   const revealedTopicCount = isLoggedIn ? realRevealedTopics : progress?.revealedTopicSlugs.length ?? 0;
-  const recent = progress?.recent ?? [];
+  const recent: RecentEntry[] = isLoggedIn ? realRecent : progress?.recent ?? [];
   const continueItem = recent[0];
 
   return (
     <div className="space-y-6">
       <div className="rounded-lg border border-border bg-surface p-4 space-y-4">
         <h2 className="font-semibold text-sm uppercase tracking-wide text-fgmuted">
-          Progress
+          Progress {!isLoggedIn && <span className="normal-case text-fgmuted/70">(this device only — sign in to save it)</span>}
         </h2>
         <ProgressBar label="LeetCode questions practiced" done={answeredCount} total={totals.questionCount} />
         <ProgressBar label="System design topics explored" done={revealedTopicCount} total={totals.topicCount} />
@@ -108,7 +114,7 @@ export default function DashboardClient({
       {recent.length > 0 && (
         <div className="space-y-2">
           <h2 className="font-semibold text-sm uppercase tracking-wide text-fgmuted">
-            Recently Practiced
+            Recently Practiced {!isLoggedIn && <span className="normal-case text-fgmuted/70">(this device only)</span>}
           </h2>
           <div className="grid gap-2">
             {recent.map((item) => (
