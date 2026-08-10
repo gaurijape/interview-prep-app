@@ -4,7 +4,7 @@ import { useState, type ReactNode } from "react";
 import { recordTopicRevealed } from "@/lib/localProgress";
 import { updateProgress } from "@/app/actions/quiz";
 
-const GUIDING_QUESTIONS = [
+const FALLBACK_QUESTIONS = [
   "What APIs would you expose?",
   "SQL or NoSQL — and why?",
   "How will IDs/keys be generated?",
@@ -12,33 +12,35 @@ const GUIDING_QUESTIONS = [
 ];
 
 /**
- * Instead of dumping the full architecture immediately, this asks the
- * standard interviewer framing questions first and makes the person
- * commit to thinking before revealing the reference design underneath —
- * closer to how a real interview actually goes.
+ * Instead of dumping the full architecture immediately, this asks
+ * framing questions first and makes the person commit to thinking before
+ * revealing the reference design underneath. Uses the topic's OWN
+ * follow-up questions (already written, already topic-specific) rather
+ * than a generic hardcoded list — falls back to generic ones only for a
+ * topic that genuinely has none written yet.
  */
 export default function TopicRevealGate({
   children,
   topicId,
   topicSlug,
   topicTitle,
+  guidingQuestions,
 }: {
   children: ReactNode;
   topicId: string;
   topicSlug: string;
   topicTitle: string;
+  guidingQuestions: string[] | null;
 }) {
   const [revealed, setRevealed] = useState(false);
+  const questions =
+    guidingQuestions && guidingQuestions.length > 0 ? guidingQuestions : FALLBACK_QUESTIONS;
 
   if (revealed) return <>{children}</>;
 
   function reveal() {
     setRevealed(true);
-    recordTopicRevealed(topicSlug); // anonymous/local fallback, always recorded
-    // Real per-user persistence — this is a no-op if not logged in (the
-    // action checks auth.getUser() and returns early), so it's safe to
-    // always call. "wasCorrect: true" here just means "engaged with it",
-    // there's no correct/incorrect concept for a reveal.
+    recordTopicRevealed(topicSlug);
     updateProgress("system_design_topic", topicId, true);
   }
 
@@ -48,7 +50,7 @@ export default function TopicRevealGate({
         Before you look — think through this
       </h2>
       <ul className="space-y-2">
-        {GUIDING_QUESTIONS.map((q, i) => (
+        {questions.map((q, i) => (
           <li key={i} className="text-sm text-fg flex gap-2">
             <span className="text-accent2 font-mono">{i + 1}.</span>
             {q}

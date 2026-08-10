@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { submitLessonAnswer } from "@/app/actions/patternLesson";
+import SlidingWindowDiagram from "@/components/diagrams/SlidingWindowDiagram";
 
 export type LessonStep = {
   id: string;
@@ -12,6 +13,13 @@ export type LessonStep = {
   prompt: string | null;
   options: string[] | null;
   practice_question_slug: string | null;
+  diagram_type: string | null;
+};
+
+// Registry mapping a step's diagram_type to an actual visual component —
+// add an entry here whenever a future pattern gets its own diagram.
+const DIAGRAM_REGISTRY: Record<string, React.ComponentType> = {
+  sliding_window: SlidingWindowDiagram,
 };
 
 const STEP_TYPE_LABELS: Record<string, string> = {
@@ -81,6 +89,12 @@ export default function PatternLearningFlow({
 
         {step.step_type === "concept" && (
           <>
+            {step.diagram_type && DIAGRAM_REGISTRY[step.diagram_type] && (
+              <>{(() => {
+                const Diagram = DIAGRAM_REGISTRY[step.diagram_type];
+                return <Diagram />;
+              })()}</>
+            )}
             <p className="text-sm text-fg whitespace-pre-line">{step.content}</p>
             <button
               onClick={goNext}

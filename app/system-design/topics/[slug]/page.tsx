@@ -68,7 +68,12 @@ export default async function TopicDetailPage({
         <p className="text-fg mt-2">{topic.description}</p>
       </div>
 
-      <TopicRevealGate topicId={topic.id} topicSlug={slug} topicTitle={topic.name}>
+      <TopicRevealGate
+        topicId={topic.id}
+        topicSlug={slug}
+        topicTitle={topic.name}
+        guidingQuestions={topic.followup_questions}
+      >
         <div className="space-y-6">
           <div className="rounded-lg border border-border bg-surface px-4">
             <ArchitectureDiagram components={diagramNodes} />

@@ -21,7 +21,7 @@ export default async function PatternLearnPage({
 
   const { data: steps } = await supabase
     .from("public_pattern_lessons")
-    .select("id, step_order, step_type, title, content, prompt, options, practice_question_slug")
+    .select("id, step_order, step_type, title, content, prompt, options, practice_question_slug, diagram_type")
     .eq("pattern_id", pattern.id)
     .order("step_order");
 
@@ -50,6 +50,7 @@ export default async function PatternLearnPage({
           prompt: s.prompt,
           options: s.options as string[] | null,
           practice_question_slug: s.practice_question_slug,
+          diagram_type: s.diagram_type,
         }))}
       />
     </div>
